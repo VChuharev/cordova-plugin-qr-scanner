@@ -1,37 +1,72 @@
-<?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-qr-scanner" version="1.0.0" 
-    xmlns="http://apache.org/cordova/ns/plugins/1.0" 
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>cordova-plugin-qr-scanner</name>
-     <js-module src="www/plugin.js" name="plugin">
-        <clobbers target="qrScanner" />
+<?xml version="1.0" encoding="utf-8"?>
+<plugin 
+  xmlns="http://www.phonegap.com/ns/plugins/1.0" id="cordova-plugin-qrscanner" version="3.0.1">
+  <name>QRScanner</name>
+  <engines>
+    <engine name="cordova" version=">=3.4.0"/>
+  </engines>
+  <js-module src="www/www.min.js" name="QRScanner">
+    <clobbers target="QRScanner" />
+  </js-module>
+  <platform name="android">
+    <config-file target="config.xml" parent="/*">
+      <platform name="android">
+        <preference name="AndroidXEnabled" value="true"/>
+      </platform>
+    </config-file>
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="QRScanner">
+        <param name="android-package" value="com.bitpay.cordova.qrscanner.QRScanner"/>
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/*">
+      <uses-permission android:name="android.permission.CAMERA" android:required="false" />
+      <uses-feature android:name="android.hardware.camera" android:required="false" />
+      <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+    </config-file>
+    <source-file src="src/android/QRScanner.java" target-dir="src/com/bitpay/cordova/qrscanner"/>
+    <framework src="src/android/qrscanner.gradle" custom="true" type="gradleReference"/>
+  </platform>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="QRScanner">
+        <param name="ios-package" value="QRScanner"/>
+      </feature>
+    </config-file>
+    <dependency id="cordova-plugin-add-swift-support" spec="~1.7.2" />
+    <source-file src="src/ios/QRScanner.swift"/>
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+      <string>The camera is used to scan QR codes.</string>
+    </config-file>
+  </platform>
+  <platform name="browser">
+    <config-file target="config.xml" parent="/*">
+      <feature name="QRScanner">
+        <param name="browser-package" value="QRScanner" />
+      </feature>
+    </config-file>
+    <js-module src="src/browser/plugin.min.js" name="QRScannerProxy">
+      <runs />
     </js-module>
-    <platform name="android">
-        <framework src="build-extras.gradle" custom="true" type="gradleReference"/>
-
-        <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="qrScanner">
-                <param name="android-package" value="org.sunbird.QRScanner" />
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-        <source-file src="src/android/org/sunbird/QRScanner.java" target-dir="src/org/sunbird/" />
-        <resource-file src="res/drawable/rounded_button.xml" target="res/drawable/rounded_button.xml"/>
-        <resource-file src="res/drawable/ic_scanqrdemo.png" target="res/drawable/ic_scanqrdemo.png" />
-        <resource-file src="res/drawable/ic_question.xml" target="res/drawable/ic_question.xml" />
-        <resource-file src="res/drawable/ic_qr_scanner_background.xml" target="res/drawable/ic_qr_scanner_background.xml" />
-        <resource-file src="res/drawable/ic_scan_onboarding.xml" target="res/drawable/ic_scan_onboarding.xml" />
-        <resource-file src="res/drawable/joyful_left_bottom_rounded.xml" target="res/drawable/joyful_left_bottom_rounded.xml" />
-        <resource-file src="res/drawable-xxhdpi/ic_action_arrow_left.png" target="res/drawable-xxhdpi/ic_action_arrow_left.png" />
-        <resource-file src="res/drawable-xxhdpi/ic_action_arrow_right.png" target="res/drawable-xxhdpi/ic_action_arrow_right.png" />
-        <resource-file src="res/layout/qr_scanner_dialog.xml" target="res/layout/qr_scanner_dialog.xml" />
-    </platform>
-    <platform name="ios">
-        <config-file target="config.xml" parent="/*">
-            <feature name="qrScanner">
-                <param name="ios-package" value="QRScannerPlugin" />
-            </feature>
-        </config-file>
-        <source-file src="src/ios/QRScannerPlugin.swift" />
-    </platform>
+  </platform>
+  <platform name="windows">
+    <config-file target="config.xml" parent="/*">
+      <feature name="QRScanner">
+        <param name="windows-package" value="QRScanner" />
+      </feature>
+    </config-file>
+    <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+      <DeviceCapability Name="webcam" />
+    </config-file>
+    <js-module src="src/windows/lib/qrScanner.js" name="qrScanner">
+      <runs/>
+    </js-module>
+    <js-module src="src/windows/lib/preview.js" name="preview">
+      <runs/>
+    </js-module>
+    <framework src="src/windows/QRReader/QRReader.csproj" custom="true" type="projectReference"/>
+    <asset src="src/windows/lib/preview.css" target="css/plugin-qrscanner-preview.css" />
+    <hook src="hooks/windows/check-arch.js" type="before_compile" />
+    <hook src="hooks/windows/check-arch.js" type="before_run" />
+  </platform>
 </plugin>
